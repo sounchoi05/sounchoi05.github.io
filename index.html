@@ -80,33 +80,28 @@
 </head>
 <body>
 <div id="status" class="line">devtools status: close</div>
-<?php
-function getRealClientIp() {
-    $ipaddress = '';
-    if (getenv('HTTP_CLIENT_IP')) {
-        $ipaddress = getenv('HTTP_CLIENT_IP');
-    } else if(getenv('HTTP_X_FORWARDED_FOR')) {
-        $ipaddress = getenv('HTTP_X_FORWARDED_FOR');
-    } else if(getenv('HTTP_X_FORWARDED')) {
-        $ipaddress = getenv('HTTP_X_FORWARDED');
-    } else if(getenv('HTTP_FORWARDED_FOR')) {
-        $ipaddress = getenv('HTTP_FORWARDED_FOR');
-    } else if(getenv('HTTP_FORWARDED')) {
-        $ipaddress = getenv('HTTP_FORWARDED');
-    } else if(getenv('REMOTE_ADDR')) {
-        $ipaddress = getenv('REMOTE_ADDR');
-    } else {
-        $ipaddress = '알수없음';
-    }
-    return $ipaddress;
-}
-?>
+<script type="text/javascript">
+var request = new XMLHttpRequest();
+request.open('GET', 'https://api.ipify.org');
+request.onload = function() {
+  if (request.status >= 200 && request.status < 400) {
+    document.getElementById("query").value=request.responseText;
+  } else {
+    document.write('IP 주소 확인 중 오류 발생:', request.statusText);
+  }
+};
+request.onerror = function() {
+  document.write('네트워크 오류 발생');
+};
+request.send();
+
+</script>
 <center>
 <form name="whois_form" method="POST">
 	<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-		Your IP Address is <input style="border:none; width:100px;" type="text" name="query" size="15" id="query" value="<?php echo getRealClientIp(); ?>"><br/><br/>
+		Your IP Address is <input style="border:none; width:100px;" type="text" name="query" size="15" id="query" value=""><br/><br/>
 		<input type="button" value="IP복사" onClick="copyip();"> &nbsp; &nbsp; &nbsp;<input type="button" value="IP 상세정보" onClick="ipcheck(document.whois_form.query.value);"><br/><br/><br/>
-		Your User-Agent is <br/></br><?php echo $_SERVER['HTTP_USER_AGENT']; ?>
+		Your User-Agent is <br/></br><script type="text/javascript">document.write(navigator.userAgent);</script>
 <input type="hidden" name="search_yn=" value="Y">
 </form>
 <div id="ipdetail"></div>
